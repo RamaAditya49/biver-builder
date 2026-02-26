@@ -1,5 +1,6 @@
 ---
 name: biver-builder
+version: 1.0.2
 description: |
   Integration skill for Biver Landing Page Builder API. Use when:
   (1) Creating, updating, or deleting landing pages
