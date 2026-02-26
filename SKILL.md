@@ -8,15 +8,31 @@ description: |
   (4) Managing products, forms, or gallery assets
   (5) Configuring workspace settings and branding
 metadata:
-  version: 1.0.3
+  version: 1.0.4
   primaryEnv: BIVER_API_KEY
   requiredEnvVars:
     - BIVER_API_KEY
   optionalEnvVars:
     - BIVER_API_BASE_URL
+  author: RamaAditya49
+  repository: https://github.com/RamaAditya49/biver-builder
 ---
 
 # Biver Builder API Skill
+
+## Before You Install
+
+> **Security Checklist**
+>
+> Before installing or supplying credentials, please review:
+>
+> 1. **Credential Required**: This skill requires `BIVER_API_KEY` to operate
+> 2. **Start with Test Keys**: Use `bvr_test_` prefix keys for initial testing — never use `bvr_live_` keys until you trust the skill
+> 3. **Verify Scopes**: Check required API key scopes below and use least-privilege principle
+> 4. **Rotate Keys**: Periodically rotate your API keys for security
+> 5. **Inspect Source**: If using manual installation, inspect the GitHub repository code before cloning
+
+---
 
 ## Installation
 
@@ -26,9 +42,17 @@ clawdhub install biver-builder
 ```
 
 ### Manual
-```bash
-git clone https://github.com/RamaAditya49/biver-builder.git ~/.openclaw/skills/biver-builder
-```
+
+> **Warning**: Cloning external repositories can introduce arbitrary code. **Inspect the repository first** before running:
+>
+> ```bash
+> # Step 1: Review the source code
+> git clone https://github.com/RamaAditya49/biver-builder.git /tmp/biver-builder-review
+> # Review files in /tmp/biver-builder-review before proceeding
+>
+> # Step 2: Only after review, install to your skills directory
+> git clone https://github.com/RamaAditya49/biver-builder.git ~/.openclaw/skills/biver-builder
+> ```
 
 ---
 
@@ -55,18 +79,22 @@ git clone https://github.com/RamaAditya49/biver-builder.git ~/.openclaw/skills/b
 
 **Security Best Practices:**
 - Use `bvr_test_` prefix keys for development/testing
-- Use `bvr_live_` prefix keys only in production
-- Limit API key scopes to minimum required permissions
+- Use `bvr_live_` prefix keys only in production **after you trust the skill**
+- **Verify required scopes** before creating your API key — only grant minimum permissions needed
 - Never commit API keys to version control
 - Rotate keys periodically
+- **Do not supply credentials** until you have reviewed the skill or confirmed it from a verified source
 
 ### How to Get Your API Key
 
 1. Log in to [Biver Dashboard](https://biver.id)
 2. Go to **Settings** > **API Keys**
 3. Click **Generate New Key**
-4. Select required scopes
-5. Copy and store securely (shown only once)
+4. **Select required scopes** (see Required Scopes section below — grant only what you need)
+5. Choose key type: `bvr_test_` for testing, `bvr_live_` for production
+6. Copy and store securely (shown only once)
+
+> **Scope Recommendation**: Start with read-only scopes (`*:read`) for testing. Add write scopes only when needed.
 
 ---
 
