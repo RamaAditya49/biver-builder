@@ -1,6 +1,5 @@
 ---
 name: biver-builder
-version: 1.0.2
 description: |
   Integration skill for Biver Landing Page Builder API. Use when:
   (1) Creating, updating, or deleting landing pages
@@ -8,6 +7,13 @@ description: |
   (3) Generating pages/sections with AI
   (4) Managing products, forms, or gallery assets
   (5) Configuring workspace settings and branding
+metadata:
+  version: 1.0.3
+  primaryEnv: BIVER_API_KEY
+  requiredEnvVars:
+    - BIVER_API_KEY
+  optionalEnvVars:
+    - BIVER_API_BASE_URL
 ---
 
 # Biver Builder API Skill
@@ -21,8 +27,46 @@ clawdhub install biver-builder
 
 ### Manual
 ```bash
-git clone https://github.com/RamaAditya49/biver.git ~/.openclaw/skills/biver-builder
+git clone https://github.com/RamaAditya49/biver-builder.git ~/.openclaw/skills/biver-builder
 ```
+
+---
+
+## Credential Configuration
+
+### Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BIVER_API_KEY` | Your Biver API key | `bvr_live_xxxxx` or `bvr_test_xxxxx` |
+
+### Optional Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `BIVER_API_BASE_URL` | Custom API base URL | `https://api.biver.id` |
+
+### Setting Up Credentials
+
+**Via OpenClaw Dashboard:**
+1. Navigate to Settings > Environment Variables
+2. Add `BIVER_API_KEY` with your API key value
+3. (Optional) Add `BIVER_API_BASE_URL` for custom endpoints
+
+**Security Best Practices:**
+- Use `bvr_test_` prefix keys for development/testing
+- Use `bvr_live_` prefix keys only in production
+- Limit API key scopes to minimum required permissions
+- Never commit API keys to version control
+- Rotate keys periodically
+
+### How to Get Your API Key
+
+1. Log in to [Biver Dashboard](https://biver.id)
+2. Go to **Settings** > **API Keys**
+3. Click **Generate New Key**
+4. Select required scopes
+5. Copy and store securely (shown only once)
 
 ---
 
@@ -34,9 +78,15 @@ https://api.biver.id
 ```
 
 ### Authentication Headers
-```
-X-API-Key: bvr_live_xxxxx
-Authorization: Bearer bvr_live_xxxxx
+```typescript
+// Use environment variables for security
+const apiKey = process.env.BIVER_API_KEY;
+
+// Headers configuration
+{
+  'X-API-Key': apiKey,
+  'Authorization': `Bearer ${apiKey}`
+}
 ```
 
 ### API Key Prefixes
@@ -118,12 +168,15 @@ Authorization: Bearer bvr_live_xxxxx
 ### Workflow 1: Create Landing Page with Subdomain
 
 ```typescript
+const API_KEY = process.env.BIVER_API_KEY;
+const BASE_URL = process.env.BIVER_API_BASE_URL || 'https://api.biver.id';
+
 // Step 1: Create subdomain
-const subdomain = await fetch('https://api.biver.id/v1/subdomains', {
+const subdomain = await fetch(`${BASE_URL}/v1/subdomains`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'bvr_live_xxxxx'
+    'X-API-Key': API_KEY
   },
   body: JSON.stringify({
     subdomain: 'my-store',
@@ -135,11 +188,11 @@ const subdomain = await fetch('https://api.biver.id/v1/subdomains', {
 // Result: my-store.lp.biver.id/summer-sale
 
 // Step 2: Create sections for the page
-const section = await fetch('https://api.biver.id/v1/sections?pageId=PAGE_ID', {
+const section = await fetch(`${BASE_URL}/v1/sections?pageId=PAGE_ID`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'bvr_live_xxxxx'
+    'X-API-Key': API_KEY
   },
   body: JSON.stringify({
     type: 'hero',
@@ -152,11 +205,11 @@ const section = await fetch('https://api.biver.id/v1/sections?pageId=PAGE_ID', {
 });
 
 // Step 3: Update subdomain status to publish
-await fetch(`https://api.biver.id/v1/subdomains/${subdomainId}`, {
+await fetch(`${BASE_URL}/v1/subdomains/${subdomainId}`, {
   method: 'PATCH',
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'bvr_live_xxxxx'
+    'X-API-Key': API_KEY
   },
   body: JSON.stringify({
     status: 'published'
@@ -167,12 +220,15 @@ await fetch(`https://api.biver.id/v1/subdomains/${subdomainId}`, {
 ### Workflow 2: Setup Custom Domain
 
 ```typescript
+const API_KEY = process.env.BIVER_API_KEY;
+const BASE_URL = process.env.BIVER_API_BASE_URL || 'https://api.biver.id';
+
 // Step 1: Add custom domain
-const domain = await fetch('https://api.biver.id/v1/domains', {
+const domain = await fetch(`${BASE_URL}/v1/domains`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'bvr_live_xxxxx'
+    'X-API-Key': API_KEY
   },
   body: JSON.stringify({
     domain: 'example.com',
@@ -186,20 +242,23 @@ const domain = await fetch('https://api.biver.id/v1/domains', {
 // Token provided in response: verificationToken
 
 // Step 3: Set as primary (optional)
-await fetch(`https://api.biver.id/v1/domains/${domainId}/primary`, {
+await fetch(`${BASE_URL}/v1/domains/${domainId}/primary`, {
   method: 'POST',
-  headers: { 'X-API-Key': 'bvr_live_xxxxx' }
+  headers: { 'X-API-Key': API_KEY }
 });
 ```
 
 ### Workflow 3: Generate Page with AI
 
 ```typescript
-const aiPage = await fetch('https://api.biver.id/v1/ai/pages', {
+const API_KEY = process.env.BIVER_API_KEY;
+const BASE_URL = process.env.BIVER_API_BASE_URL || 'https://api.biver.id';
+
+const aiPage = await fetch(`${BASE_URL}/v1/ai/pages`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'bvr_live_xxxxx'
+    'X-API-Key': API_KEY
   },
   body: JSON.stringify({
     prompt: 'Create a landing page for a coffee shop called Morning Brew',
@@ -214,22 +273,25 @@ const aiPage = await fetch('https://api.biver.id/v1/ai/pages', {
 ### Workflow 4: Upload Asset and Create Page
 
 ```typescript
+const API_KEY = process.env.BIVER_API_KEY;
+const BASE_URL = process.env.BIVER_API_BASE_URL || 'https://api.biver.id';
+
 // Step 1: Upload image to gallery
 const formData = new FormData();
 formData.append('file', imageFile);
 
-const asset = await fetch('https://api.biver.id/v1/gallery', {
+const asset = await fetch(`${BASE_URL}/v1/gallery`, {
   method: 'POST',
-  headers: { 'X-API-Key': 'bvr_live_xxxxx' },
+  headers: { 'X-API-Key': API_KEY },
   body: formData
 });
 
 // Step 2: Use asset URL in page content
-const page = await fetch('https://api.biver.id/v1/pages', {
+const page = await fetch(`${BASE_URL}/v1/pages`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'bvr_live_xxxxx'
+    'X-API-Key': API_KEY
   },
   body: JSON.stringify({
     title: 'Product Catalog',
@@ -630,6 +692,26 @@ All responses follow this structure:
   }
 }
 ```
+
+---
+
+## Security Considerations
+
+### API Key Safety
+- **Never** hardcode API keys in source code
+- **Always** use environment variables or secure secret stores
+- **Use test keys** (`bvr_test_`) for development
+- **Limit scopes** to minimum required for your use case
+
+### DNS Configuration
+- Custom domain setup requires DNS changes outside this API
+- Always verify domain ownership before making DNS changes
+- Keep DNS verification tokens secure
+
+### Rate Limiting
+- Respect rate limits based on your plan
+- Implement retry logic with exponential backoff
+- Monitor `X-RateLimit-Remaining` header
 
 ---
 
