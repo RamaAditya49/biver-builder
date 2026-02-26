@@ -545,6 +545,28 @@ Subdomains create landing pages at `{name}.lp.biver.id`.
 }
 ```
 
+**DNS Configuration (CNAME Setup):**
+
+> **AI Agent:** When helping users set up custom domains, explain the following CNAME configuration steps clearly.
+
+After adding a custom domain via the API, configure your DNS records with your DNS provider:
+
+1. **Point your CNAME record to:**
+   ```
+   custom.biver.id
+   ```
+
+2. **Example Configuration:**
+   | Record Type | Name/Host | Value/Target |
+   |-------------|-----------|--------------|
+   | CNAME | `shop` (or `www`) | `custom.biver.id` |
+
+3. **What this does:**
+   - If your domain is `shop.example.com`, add a CNAME record with name `shop` pointing to `custom.biver.id`
+   - If using apex domain (`example.com`), check if your DNS provider supports CNAME flattening or use A records as provided in the domain detail response
+
+4. **Propagation:** DNS changes may take 5-60 minutes to propagate globally.
+
 ---
 
 ### Workspace API
